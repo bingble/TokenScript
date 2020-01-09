@@ -1,0 +1,39 @@
+<ts:token>
+    <ts:contract>....</ts:contract>
+    <ts:objectClass id="ticket">
+        <sequence>
+            <element name="numero" type="asn:Integer"/>
+            <element name="owner" type="asn:OctetString" type="ethereum:address"/>
+            <element name="class">
+                <type>
+                    <enumerated>
+                        <enumeration name="normal" number="0"/>
+                        <enumeration name="gift" number="1"/>
+                        <enumeration name="VIP" number="2"/>
+                    </enumerated>
+                </type>
+            </element>
+            <element name="start" type="asn:UTCTime"/>
+        </sequence>
+    </ts:objectClass>
+    <ts:attribute-type id="numero" identifier="true">
+        <ts:name>
+            <ts:string>№</ts:string>
+        </ts:name>
+        <ts:origins>
+            <ts:attestation ref="ticket" signer="0x24f9269ea7f6993ad3133102b923de88b8bcf882bf46f0a7b062eb5b3925af48"/>
+        </ts:origins>
+    </ts:attribute-type>
+    <ts:attribute-type id="redeembed">
+        <ts:name>
+            <ts:string xml:lang="en">Redeemed</ts:string>
+        </ts:name>
+        <ts:origins>
+            <ts:ethereum function="redeemed()" contract="ticket_issuer">
+                <sequence>
+                    <element name="numero" ref="numero" type="ethereum:uint"/>
+                </sequence>
+            </ts:ethereum>
+        </ts:origins>
+    </ts:attribute-type>
+</ts:token>

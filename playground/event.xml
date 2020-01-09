@@ -1,0 +1,30 @@
+<ts:token>
+    <ts:contract interface="erc721" name="ENS">
+        <ts:address network="1">0xFaC7BEA255a6990f749363002136aF6556b31e04</ts:address>
+    </ts:contract>
+    <ts:contract name="registrar">
+        <ts:address network="1">0xF0AD5cAd05e10572EfcEB849f6Ff0c68f9700455</ts:address>
+        <ts:objectClass id="NameRegistered"><!-- hashed from "NameRegistered(string,bytes32,address,uint,uint)" -->
+            <sequence>
+                <element name="name" type="ethereum:string"/>
+                <element name="label" type="ethereum:bytes32"/>
+                <element name="owner" type="ethereum:address"/>
+                <element name="cost" type="ethereum:uint"/>
+                <element name="expires" type="ethereum:uint"/>
+            </sequence>
+        </ts:objectClass>
+    </ts:contract>
+
+    <ts:attribute-type id="name" syntax="1.3.6.1.4.1.1466.115.121.1.15" identifier="true">
+        <ts:name>
+            <ts:string xml:lang="en">ENS Name</ts:string>
+            <ts:string xml:lang="zh">ENS名字</ts:string>
+        </ts:name>
+        <ts:origins>
+            <!-- the filter works because when there are multiple events by the same identifier, the last is used-->
+            <ts:event ref="NameRegistered" contract="registrar" filter="owner=$(owner_address)">
+                <!-- there is a default selector which selects 'name' from the 'event' -->
+            </ts:event>
+        </ts:origins>
+    </ts:attribute-type>
+</ts:token>
