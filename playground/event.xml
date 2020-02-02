@@ -4,18 +4,21 @@
     </ts:contract>
     <ts:contract name="registrar">
         <ts:address network="1">0xF0AD5cAd05e10572EfcEB849f6Ff0c68f9700455</ts:address>
-        <ts:objectClass id="NameRegistered"><!-- hashed from "NameRegistered(string,bytes32,address,uint,uint)" -->
+        <ts:objectClass id="NameRegistered">
+            <!-- hash can be calculated from "NameRegistered(string,bytes32,address,uint,uint)" -->
             <sequence>
-                <element name="name" type="ethereum:string"/>
-                <element name="label" type="ethereum:bytes32"/>
-                <element name="owner" type="ethereum:address"/>
-                <element name="cost" type="ethereum:uint"/>
-                <element name="expires" type="ethereum:uint"/>
+                <element name="name" ethereum:type="string"/>
+                <element name="label" ethereum:type="bytes32"/>
+                <element name="owner" ethereum:type="address"/>
+                <element name="cost" ethereum:type="uint"/>
+                <element name="expires" ethereum:type="uint"/>
             </sequence>
         </ts:objectClass>
     </ts:contract>
 
-    <ts:attribute-type id="name" syntax="1.3.6.1.4.1.1466.115.121.1.15" identifier="true">
+    <!-- "distinct" replaces the <origin> element which used to be directly under token -->
+
+    <ts:attribute-type id="name" syntax="1.3.6.1.4.1.1466.115.121.1.15" distinct="true">
         <ts:name>
             <ts:string xml:lang="en">ENS Name</ts:string>
             <ts:string xml:lang="zh">ENS名字</ts:string>
@@ -24,7 +27,33 @@
             <!-- the filter works because when there are multiple events by the same identifier, the last is used-->
             <ts:event ref="NameRegistered" contract="registrar" filter="owner=$(owner_address)">
                 <!-- there is a default selector which selects 'name' from the 'event' -->
+                <ts:event outgoing="true" filter="name=$(name)"><!--/* use reverse filter */-->
+                </ts:event>
             </ts:event>
         </ts:origins>
     </ts:attribute-type>
+
+    <ts:cards>
+        <ts:token-card>
+            <style type="text/css">&style;</style>
+            <ts:view-iconified xml:lang="en">Hello Token
+            </ts:view-iconified>
+            <ts:view xml:lang="en">Hello Token Detail
+            </ts:view>
+        </ts:token-card>
+
+        <!-- Sometimes, smart contract developers want to have an event view that reflects more than 1 event in the same transaction. Should we give them the pleasure? I'm afraid not at this moment.-->
+        <ts:event ref="NameRegistered" contract="registrar" filter="owner=$(owner_address)">
+            <style type="text/css">* {font-weight: bold;} </style>
+            <ts:view-iconified>Obtained new name: [java script to get ] ....</ts:view-iconified>
+            <ts:view xml:lang="en">A new name: old owner= xxx; new owner=xxx;</ts:view>
+        </ts:event>
+
+        <!-- Sometimes, smart contract developers want to have an event view that reflects more than 1 event in the same transaction. Should we give them the pleasure? I'm afraid not at this moment.-->
+        <ts:event ref="NameRegistered" contract="registrar" filter="sender=$(owner_address)">
+            <style type="text/css">* {font-weight: bold;} </style>
+            <ts:view-iconified>you just sent away your name: ....</ts:view-iconified>
+            <ts:view xml:lang="en">A name is no longer yours: old owner= xxx; new owner=xxx;</ts:view>
+        </ts:event>
+    </ts:cards>
 </ts:token>
